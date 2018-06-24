@@ -25,24 +25,33 @@
 	3. 在dao包中新建UserDao类，根据name和password查询表user,如果有数据就表示账号密码正确。
 	4. 新建login.jsp，用户登录界面，提交到“login”。
 	5. 在servlet包中新建UserLoginServlet，登录Servlet， 通过name和password获取user对象，
-	如果对象不为空，就表示账号密码正确，跳转到产品显示界面/listProduct，如果对象为空，即数据库中没有该用户，就跳转到登录界面，重新登录。
+	如果对象不为空，就表示账号密码正确，跳转到产品显示界面/listProduct，
+	如果对象为空，即数据库中没有该用户，就跳转到登录界面，重新登录。
 	6. 配置web.xml，在web.xml中为路径/login加上相关配置。
 	7. 修改listProduct.jsp，如果用户登陆了，就显示用户的名字。
 ### （4）购物车模块：
-	1. 在bean包中新建OrderItem类，该类有Product类型的product，没有使用int类型的pid，因为在后续显示购物车的时候，可以很简单的通过el表达式就显示商品名称和价格。
-	2. 在dao包中新建UserDao类，因为购买的时候，提交到服务器的是pid, 而OrderItem类的product属性是Product类型的，所以ProductDAO需要根据id获取Product对象。
-	3. 在servlet包中新建OrderItemAddServlet类。购买行为本身就是创建一个OrderItem对象，在负责购买商品的OrderItemAddServlet中，进行如下流程:
+	1. 在bean包中新建OrderItem类，该类有Product类型的product，没有使用int类型的pid，
+	因为在后续显示购物车的时候，可以很简单的通过el表达式就显示商品名称和价格。
+	2. 在dao包中新建UserDao类，因为购买的时候，提交到服务器的是pid,
+	而OrderItem类的product属性是Product类型的，所以ProductDAO需要根据id获取Product对象。
+	3. 在servlet包中新建OrderItemAddServlet类。购买行为本身就是创建一个OrderItem对象，
+	在负责购买商品的OrderItemAddServlet中，进行如下流程:
 		1. 获取购买数量
 		2. 获取购买商品的id
 		3. 根据id获取商品对象
 		4. 创建一个新的OrderItem对象
-		5. 从session中取出一个List , 这个List里面存放陆续购买的商品。如果是第一次从session中获取该List,那么它会是空的，需要创建一个ArrayList
+		5. 从session中取出一个List , 这个List里面存放陆续购买的商品。
+		如果是第一次从session中获取该List,那么它会是空的，需要创建一个ArrayList
 		6. 把新创建的OrderItem对象放入该List中
 		7. 跳转到显示购物车的listOrderItem 
-	4. 在servlet包中新建OrderItemListServlet，显示购物车的OrderItemListServlet其实什么也没做，因为数据已经在session准备好了，直接服务端跳转到listOrderItem.jsp，
-	在listOrderItem.jsp中，从session中遍历出所有的OrderItem。因为保存在OrderItem上的是一个Product对象，所以很容易就可以通过EL表达式遍历出商品的名称和价格。
-	5. 在listOrderItem.jsp中，在每条OrderItem后增加一个删除选项，提交到“deleteOrderItem”，实现对该订单项的删除，在对应的OrderItemDeleteServlet中删除提交的订单项，再在listOrderItem.jsp里呈现删除后的所有订单项。
-	6. 为了应对购买了同一商品情况的出现，需要修改OrderItemAddServlet，遍历session中所有的OrderItem，如果找到对应的product.id一样的条目，就调整其数量，如果没有找到，就新增加一条。 
+	4. 在servlet包中新建OrderItemListServlet，显示购物车的OrderItemListServlet其实什么也没做，
+	因为数据已经在session准备好了，直接服务端跳转到listOrderItem.jsp，
+	在listOrderItem.jsp中，从session中遍历出所有的OrderItem。
+	因为保存在OrderItem上的是一个Product对象，所以很容易就可以通过EL表达式遍历出商品的名称和价格。
+	5. 在listOrderItem.jsp中，在每条OrderItem后增加一个删除选项，提交到“deleteOrderItem”，实现对该订单项的删除，
+	在对应的OrderItemDeleteServlet中删除提交的订单项，再跳到listOrderItem.jsp，呈现删除后的所有订单项。
+	6. 为了应对购买了同一商品情况的出现，需要修改OrderItemAddServlet，遍历session中所有的OrderItem，
+	如果找到对应的product.id一样的条目，就调整其数量，如果没有找到，就新增加一条。 
 	7. 配置web.xml，在web.xml中为路径/addOrderItem，/listOrderItem及/deleteOrderItem加上相关配置。
 ### （5）订单模块：
 	1. 在cart数据库中，创建order表，里面有一个uid字段用于表明该订单属于哪个用户。
